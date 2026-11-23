@@ -1,0 +1,20 @@
+# Data (downloaded zips, CSVs, DuckDB database)
+data/
+*.duckdb
+*.duckdb.wal
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+logs/
+
+# Editors / OS
+.vscode/
+.DS_Store
+Thumbs.db
