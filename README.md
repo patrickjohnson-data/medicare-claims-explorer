@@ -83,7 +83,7 @@ Every result was validated during development, not just generated:
 
 - **Reconciliation:** claim counts and payment totals in the marts were reconciled against staging for each claim type, and they match exactly.
 - **Profiling before modeling:** the raw data was profiled before each model was designed, covering grain, null rates, code values, date formats and how the ID ranges split across files. This surfaced the quirks below.
-- **Automated tests:** 14 dbt tests run on every build. They check uniqueness and not-null on keys, accepted values, referential integrity between facts and dimensions, valid claim date ranges, and at most one primary diagnosis per claim.
+- **Automated tests:** 14 dbt tests (12 built-in, 2 custom SQL) run on every build. They check uniqueness and not-null on keys, accepted values, referential integrity between facts and dimensions, valid claim date ranges, and at most one primary diagnosis per claim.
 - **Reviewing logs and output:** dbt build logs, test output and sample rows were checked after every change.
 
 **Data quirks found and how they're handled:**
