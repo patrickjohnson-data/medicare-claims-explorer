@@ -4,12 +4,12 @@
 
 **Data:** CMS DE-SynPUF Sample 1 — synthetic Medicare claims, 2008–2010, ICD-9 codes.
 
-**Flow:** CSVs → Python load → DuckDB `raw` → dbt staging → intermediate → marts → anomaly flags → Ollama explanations → seed → README
+**Flow:** CSVs → Python load → DuckDB `raw` → dbt staging → intermediate → marts → anomaly flags → README
 
 ## Ground rules
 
-- Free tools only: Python (uv, Python 3.12), dbt Core v1 + dbt-duckdb, DuckDB, Ollama.
-- Python handles ingestion (download and load) and the LLM explanations. All transformations live in dbt SQL.
+- Free tools only: Python (uv, Python 3.12), dbt Core v1 + dbt-duckdb, DuckDB.
+- Python handles ingestion (download and load). All transformations live in dbt SQL.
 - Large data files and the DuckDB file are gitignored.
 
 ## Design choices (decided up front)
@@ -29,5 +29,5 @@
 - [x] **4. Intermediate and marts**: unpivot diagnoses, combine the claim types; `dim_members`, `fct_claims`, `fct_claim_diagnoses`; cost marts by diagnosis, by provider and by month. Simplified: no `dim_providers` (the data has no provider details beyond an ID) and no carrier line unpivot (a carrier claim's lines almost always share one doctor, so line 1's doctor is the claim's provider).
 - [x] **5. Tests**: built-in tests on the marts (unique, not null, accepted values, relationships) plus custom SQL tests: claims end within 2008–2010 and not before they start; at most one primary diagnosis per claim. Dropped "non-negative payments" because the data has real negative adjustments, and "line totals match claim totals" to keep things simple. The mart totals were reconciled with staging by hand once.
 - [x] **6. Anomaly flags in SQL**: `provider_flags` compares each provider's average payment per claim and claims per member with peers of the same claim type. A provider (with 30+ claims) is flagged if it is in the top 1% of its peers on either measure (`PERCENT_RANK`). Chosen over a robust z-score because it is simple to read and explain. Result: 120 of 6,055 providers flagged.
-- [ ] **7. Ollama explanations**: install Ollama and a small model; `scripts/explain_flags.py` writes `dbt/seeds/flag_explanations.csv` (committed).
+- [ ] ~~**7. Ollama explanations**~~: skipped to keep the project focused on the data pipeline.
 - [ ] **8. README and make the repo public**: findings, design choices, limitations (synthetic data; a flag is not proof of fraud), how to run it.
