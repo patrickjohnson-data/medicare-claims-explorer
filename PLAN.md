@@ -26,7 +26,7 @@
 - [x] **1. Repo and Python setup**: git init, .gitignore, commit PLAN.md, uv project (Python 3.12, duckdb, dbt-core <2, dbt-duckdb), private GitHub repo.
 - [x] **2. Download and load**: `scripts/download.py` (5 zips from CMS) and `scripts/load_raw.py` (CSV → DuckDB `raw` schema, row counts, delete CSVs). Confirmed that Carrier 1A is split by member ID.
 - [x] **3. dbt staging**: dbt project setup, sources, one `stg_` model per source (casts, dates, renames), ICD-9 seed.
-- [ ] **4. Intermediate and marts**: unpivot diagnoses and carrier lines, combine the claim types; `dim_members`, `dim_providers`, `fct_claims`, `fct_claim_diagnoses`; cost marts by diagnosis, by provider and by month.
+- [x] **4. Intermediate and marts**: unpivot diagnoses, combine the claim types; `dim_members`, `fct_claims`, `fct_claim_diagnoses`; cost marts by diagnosis, by provider and by month. Simplified: no `dim_providers` (the data has no provider details beyond an ID) and no carrier line unpivot (a carrier claim's lines almost always share one doctor, so line 1's doctor is the claim's provider).
 - [ ] **5. Tests**: built-in tests plus custom tests (non-negative payments, line totals match claim totals, dates within 2008–2010).
 - [ ] **6. Anomaly flags in SQL**: cost per claim and claims per member compared with peers in the same care setting (robust z-score with a minimum-volume threshold; method finalized in this step).
 - [ ] **7. Ollama explanations**: install Ollama and a small model; `scripts/explain_flags.py` writes `dbt/seeds/flag_explanations.csv` (committed).
