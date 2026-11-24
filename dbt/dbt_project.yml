@@ -17,22 +17,18 @@ vars:
   # Use in SQL as: '{{ var("max_member_id") }}'
   max_member_id: "7F1460C68FD409E9"
 
-# Each folder builds into its own DuckDB schema (see macros/generate_schema_name.sql).
+# All models build into the default schema (main). Folders only organize files.
 models:
   medicare_claims:
     staging:
-      +schema: staging
       +materialized: view
     intermediate:
-      +schema: intermediate
       +materialized: view
     marts:
-      +schema: marts
       +materialized: table
 
 seeds:
   medicare_claims:
-    +schema: seeds
     icd9_diagnoses:
       # Load every column as text. Without this, dbt would guess that codes
       # like "0010" are numbers and drop the leading zeros.

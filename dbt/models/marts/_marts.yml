@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: fct_claims
+    description: One row per claim (inpatient, outpatient and carrier).
+    columns:
+      - name: claim_id
+        data_tests:
+          - unique
+          - not_null
+      - name: claim_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["inpatient", "outpatient", "carrier"]
+      - name: member_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_members')
+                field: member_id
+      - name: payment_amount
+        data_tests:
+          - not_null
+
+  - name: fct_claim_diagnoses
+    description: One row per claim per diagnosis code.
+    columns:
+      - name: claim_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_claims')
+                field: claim_id
+      - name: dx_code
+        data_tests:
+          - not_null
+
+  - name: dim_members
+    description: One row per member, from their latest year on file.
+    columns:
+      - name: member_id
+        data_tests:
+          - unique
+          - not_null
