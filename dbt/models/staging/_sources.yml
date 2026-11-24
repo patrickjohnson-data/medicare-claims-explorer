@@ -1,0 +1,43 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      CMS DE-SynPUF Sample 1 (synthetic Medicare claims, 2008-2010), loaded
+      by scripts/load_raw.py. Every column is VARCHAR; casting happens in staging.
+      Each table also has _source_file and _loaded_at, added by the loader.
+    schema: raw
+    tables:
+      - name: beneficiary_summary
+        description: >
+          One row per member per year (2008 and 2009 stacked). _source_file
+          tells the years apart. Includes demographics, coverage months,
+          chronic condition flags, and yearly payment totals.
+        columns:
+          - name: DESYNPUF_ID
+            description: Synthetic member ID.
+
+      - name: inpatient_claims
+        description: >
+          Hospital stays (Medicare Part A). One row per claim segment; the
+          grain is CLM_ID + SEGMENT.
+        columns:
+          - name: CLM_ID
+            description: Claim ID. Not unique on its own; see SEGMENT.
+
+      - name: outpatient_claims
+        description: >
+          Hospital outpatient visits (Medicare Part B, institutional). One row
+          per claim segment; the grain is CLM_ID + SEGMENT.
+        columns:
+          - name: CLM_ID
+            description: Claim ID. Not unique on its own; see SEGMENT.
+
+      - name: carrier_claims
+        description: >
+          Doctor and supplier bills (Medicare Part B, professional). Carrier
+          file 1A only. One row per claim, with up to 13 line items stored
+          as numbered columns (_1 to _13).
+        columns:
+          - name: CLM_ID
+            description: Claim ID. Unique in this table.

@@ -1,0 +1,9 @@
+# Committed on purpose: DuckDB is a local file, so there are no secrets here.
+# Run dbt from the dbt/ folder, so the relative path below resolves correctly.
+medicare_claims:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/medicare.duckdb
+      threads: 4

@@ -1,0 +1,42 @@
+name: medicare_claims
+version: "1.0.0"
+config-version: 2
+
+profile: medicare_claims
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # Highest member ID in Carrier file 1A (see PLAN.md "Keep the member
+  # population consistent"). Staging keeps members <= this ID in every table.
+  # Use in SQL as: '{{ var("max_member_id") }}'
+  max_member_id: "7F1460C68FD409E9"
+
+# Each folder builds into its own DuckDB schema (see macros/generate_schema_name.sql).
+models:
+  medicare_claims:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
+
+seeds:
+  medicare_claims:
+    +schema: seeds
+    icd9_diagnoses:
+      # Load every column as text. Without this, dbt would guess that codes
+      # like "0010" are numbers and drop the leading zeros.
+      +column_types:
+        icd9_code: varchar
+        short_description: varchar
+        long_description: varchar
